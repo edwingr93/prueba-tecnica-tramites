@@ -4,11 +4,15 @@ Expone:
 - GET /health: chequeo de salud del servicio.
 - GET /tramite/{id}: devuelve datos mockeados de un tramite.
 """
+import os
 from datetime import datetime
 
 from fastapi import FastAPI, HTTPException
 
 app = FastAPI(title="Tramites API", version="1.0.0")
+
+# En Cloud Run se inyecta desde Secret Manager (secreto tramites-api-key).
+API_KEY = os.environ.get("API_KEY", "")
 
 # Datos mockeados de ejemplo para pruebas.
 _TRAMITES_MOCK = {
@@ -38,7 +42,12 @@ _TRAMITES_MOCK = {
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "timestamp": datetime.utcnow().isoformat()}
+    return {
+        "status": "ok",
+        "timestamp": datetime.utcnow().isoformat(),
+        # Solo indica si el secreto llego; nunca se expone su valor.
+        "api_key_configured": bool(API_KEY),
+    }
 
 
 @app.get("/tramite/{tramite_id}")
