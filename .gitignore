@@ -23,6 +23,7 @@ __pycache__/
 .venv/
 .env
 .env.*
+!.env.example
 *-key.json
 *credentials*.json
 *.tfstate
