@@ -65,7 +65,15 @@ jobs:
           provenance: false
           sbom: false
 
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy tramites-api \
+            --project "${PROJECT_ID}" \
+            --region "${REGION}" \
+            --image "${REGION}-docker.pkg.dev/${PROJECT_ID}/${GAR_REPOSITORY}/${IMAGE_NAME}:${GITHUB_SHA}" \
+            --quiet
+
       - name: Show published image
         run: |
-          echo "Published image:" >> "$GITHUB_STEP_SUMMARY"
+          echo "Deployed image:" >> "$GITHUB_STEP_SUMMARY"
           echo "\`${REGION}-docker.pkg.dev/${PROJECT_ID}/${GAR_REPOSITORY}/${IMAGE_NAME}:${GITHUB_SHA}\`" >> "$GITHUB_STEP_SUMMARY"
